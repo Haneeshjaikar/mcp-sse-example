@@ -70,12 +70,9 @@ server.tool(
 );
 
 server.tool("calculateComplexity", {
-  config: z.object({
     word_count: z.number().default(100),
     language: z.string(),
-  })
-}, async ({ config }) => {
-  const { word_count, language } = config;
+}, async ({ word_count, language }) => {
   console.log("MCP SERVER: calculateComplexity tool called with:", { word_count, language });
 
   let complexity = 100;

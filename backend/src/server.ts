@@ -17,9 +17,20 @@ const server = new McpServer({
 });
 
 // Add an addition tool
-server.tool("add", { a: z.number(), b: z.number() }, async ({ a, b }) => ({
-  content: [{ type: "text", text: String(a + b) }],
-}));
+server.tool("add", { a: z.number(), b: z.number() }, async ({ a, b }) => {
+  console.log("MCP SERVER: add tool called with a =", a, ", b =", b);
+  try{
+    const result = a + b;
+    console.log("MCP SERVER: add tool result = ", result);
+    return{
+      content: [{ type: "text", text: String(result) }]
+    }
+  }catch (error){
+      console.error("MCP SERVER: add tool error = ", error);
+      return {content: [{type: "text", text: "Error"}]}
+  }
+
+});
 
 server.tool(
   "search",

@@ -68,6 +68,45 @@ server.tool(
     };
   }
 );
+
+server.tool("calculateComplexity", {
+  config: z.object({
+    word_count: z.number().default(100),
+    language: z.string(),
+  })
+}, async ({ config }) => {
+  const { word_count, language } = config;
+  console.log("MCP SERVER: calculateComplexity tool called with:", { word_count, language });
+
+  let complexity = 100;
+  switch (language.toLowerCase()) {
+    case "hinglish":
+      complexity = word_count * 0.85;
+      break;
+    case "spanish":
+      complexity = word_count * 0.95;
+      break;
+    case "french":
+      complexity = word_count * 0.92;
+      break;
+    case "english":
+      complexity = word_count * 0.75;
+      break;
+    case "italian":
+      complexity = word_count * 0.85;
+      break;
+    case "russian":
+      complexity = word_count * 1.12;
+      break;
+  }
+
+  console.log("MCP SERVER: Complexity calculated:", complexity);
+
+  return {
+    content: [{ type: "text", text: String(complexity) }],
+  };
+});
+
 // Add a dynamic greeting resource
 server.resource(
   "greeting",

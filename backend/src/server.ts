@@ -7,6 +7,7 @@ import {
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { z } from "zod";
 import cors from "cors";
+import { Fetcher } from "./fetcher.js";
 
 // Load environment variables
 config();
@@ -103,6 +104,31 @@ server.tool("calculateComplexity", {
     content: [{ type: "text", text: String(complexity) }],
   };
 });
+
+server.tool(
+  "fetch_html",
+  {
+    url: z.string().url(),
+    headers: z.record(z.string()).optional(),
+  },
+  async (args, _extra) => {
+    console.log("MCP SERVER: fetch_html tool called with url =", args.url);
+    try {
+      const fetchResult = await Fetcher.html({ url: args.url, headers: args.headers });
+      const htmlText = fetchResult.content[0].text;
+
+      return {
+        content: [{ type: "text", text: htmlText }],
+      };
+    } catch (error) {
+      console.error("MCP SERVER: fetch_html tool error =", error);
+      return {
+        content: [{ type: "text", text: String((error as Error).message) }],
+        isError: true,
+      };
+    }
+  }
+);
 
 // Add a dynamic greeting resource
 server.resource(
